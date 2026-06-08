@@ -3,36 +3,38 @@ import { db } from "@vilelaia/db";
 import { conversationsTable, messagesTable } from "@vilelaia/db";
 import { eq, desc, count } from "drizzle-orm";
 import { CreateConversationBody, SendMessageBody, GetConversationParams, DeleteConversationParams, ListMessagesParams, SendMessageParams } from "@vilelaia/api-zod";
-import Groq from "groq-sdk";
+import OpenAI from "openai";
 
 const router = Router();
 
-let groq: Groq | null = null;
+let openai: OpenAI | null = null;
 
-if (process.env.GROQ_API_KEY) {
-  groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+if (process.env.OPENCODE_GO_API_KEY) {
+  openai = new OpenAI({ 
+    apiKey: process.env.OPENCODE_GO_API_KEY,
+    baseURL: "https://opencode.ai/zen/go/v1"
+  });
 }
 
-const SYSTEM_PROMPT = `Você é um agente especialista em desenvolvimento web, design de interfaces, e criação de software para a web. Seu nome é Agente Vilela.
+const SYSTEM_PROMPT = `Voce e um agente especialista em desenvolvimento web, design de interfaces, e criacao de software para a web. Seu nome e VilelaIA.
 
 Suas especialidades incluem:
-- Landing pages de alta conversão: estrutura, copywriting persuasivo, hierarquia visual, CTAs eficazes
-- Design de interfaces (UI/UX): princípios de design, sistemas de design, acessibilidade, responsividade
-- Desenvolvimento frontend: React, Next.js, Tailwind CSS, animações, performance
-- Desenvolvimento backend: Node.js, APIs REST e GraphQL, bancos de dados, autenticação
-- E-commerce e SaaS: arquitetura, fluxos de conversão, onboarding, métricas
-- SEO técnico e otimização de performance
-- Melhores práticas de código: clean code, componentização, TypeScript, testes
+- Landing pages de alta conversao: estrutura, copywriting persuasivo, hierarquia visual, CTAs eficazes
+- Design de interfaces (UI/UX): principios de design, sistemas de design, acessibilidade, responsividade
+- Desenvolvimento frontend: React, Next.js, Tailwind CSS, animacoes, performance
+- Desenvolvimento backend: Node.js, APIs REST e GraphQL, bancos de dados, autenticacao
+- E-commerce e SaaS: arquitetura, fluxos de conversao, onboarding, metricas
+- SEO tecnico e otimizacao de performance
+- Melhores praticas de codigo: clean code, componentizacao, TypeScript, testes
 
 Ao responder:
-- Seja direto e prático. Forneça exemplos de código quando relevante.
-- Use Markdown para formatar respostas: headers, listas, blocos de código com sintaxe correta.
-- Para landing pages e sites, forneça estrutura de seções, copy sugerido, e código HTML/CSS/React quando solicitado.
-- Para questões técnicas, explique o raciocínio e forneça implementações completas e funcionais.
-- Não seja genérico. Adapte cada resposta ao contexto específico do usuário.
-- Responda em português quando o usuário escrever em português.`;
+- Seja direto e pratico. Forneça exemplos de codigo quando relevante.
+- Use Markdown para formatar respostas: headers, listas, blocos de codigo com sintaxe correta.
+- Para landing pages e sites, forneça estrutura de secoes, copy sugerido, e codigo HTML/CSS/React quando solicitado.
+- Para questoes tecnicas, explique o raciocinio e forneça implementacoes completas e funcionais.
+- Nao seja generico. Adapte cada resposta ao contexto especifico do usuario.
+- Responda em portugues quando o usuario escrever em portugues.`;
 
-// GET /api/conversations
 router.get("/conversations", async (req, res) => {
   try {
     const conversations = await db.select().from(conversationsTable).orderBy(desc(conversationsTable.updatedAt));
@@ -59,7 +61,6 @@ router.get("/conversations", async (req, res) => {
   }
 });
 
-// POST /api/conversations
 router.post("/conversations", async (req, res) => {
   try {
     const parsed = CreateConversationBody.safeParse(req.body);
@@ -86,7 +87,6 @@ router.post("/conversations", async (req, res) => {
   }
 });
 
-// GET /api/conversations/:id
 router.get("/conversations/:id", async (req, res) => {
   try {
     const parsed = GetConversationParams.safeParse({ id: Number(req.params.id) });
@@ -123,7 +123,6 @@ router.get("/conversations/:id", async (req, res) => {
   }
 });
 
-// DELETE /api/conversations/:id
 router.delete("/conversations/:id", async (req, res) => {
   try {
     const parsed = DeleteConversationParams.safeParse({ id: Number(req.params.id) });
@@ -142,7 +141,6 @@ router.delete("/conversations/:id", async (req, res) => {
   }
 });
 
-// GET /api/conversations/:id/messages
 router.get("/conversations/:id/messages", async (req, res) => {
   try {
     const parsed = ListMessagesParams.safeParse({ id: Number(req.params.id) });
@@ -172,7 +170,6 @@ router.get("/conversations/:id/messages", async (req, res) => {
   }
 });
 
-// POST /api/conversations/:id/messages — SSE streaming
 router.post("/conversations/:id/messages", async (req, res) => {
   try {
     const paramsParsed = SendMessageParams.safeParse({ id: Number(req.params.id) });
@@ -190,7 +187,6 @@ router.post("/conversations/:id/messages", async (req, res) => {
     const conversationId = paramsParsed.data.id;
     const userContent = bodyParsed.data.content;
 
-    // Check conversation exists
     const [conversation] = await db
       .select()
       .from(conversationsTable)
@@ -201,14 +197,12 @@ router.post("/conversations/:id/messages", async (req, res) => {
       return;
     }
 
-    // Save user message
     await db.insert(messagesTable).values({
       conversationId,
       role: "user",
       content: userContent,
     });
 
-    // Update conversation title if it's the first message
     const [{ msgCount }] = await db
       .select({ msgCount: count() })
       .from(messagesTable)
@@ -227,7 +221,6 @@ router.post("/conversations/:id/messages", async (req, res) => {
         .where(eq(conversationsTable.id, conversationId));
     }
 
-    // Get conversation history
     const history = await db
       .select()
       .from(messagesTable)
@@ -239,7 +232,6 @@ router.post("/conversations/:id/messages", async (req, res) => {
       content: m.content,
     }));
 
-    // Set SSE headers
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
@@ -247,14 +239,14 @@ router.post("/conversations/:id/messages", async (req, res) => {
 
     let fullResponse = "";
 
-    if (!groq) {
-      res.write(`data: ${JSON.stringify({ error: "GROQ_API_KEY not configured" })}\n\n`);
+    if (!openai) {
+      res.write(`data: ${JSON.stringify({ error: "OPENCODE_GO_API_KEY not configured" })}\n\n`);
       res.end();
       return;
     }
 
-    const stream = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+    const stream = await openai.chat.completions.create({
+      model: "qwen3.7-plus",
       messages: [{ role: "system", content: SYSTEM_PROMPT }, ...chatMessages],
       stream: true,
       max_tokens: 8192,
@@ -268,7 +260,6 @@ router.post("/conversations/:id/messages", async (req, res) => {
       }
     }
 
-    // Save assistant message
     await db.insert(messagesTable).values({
       conversationId,
       role: "assistant",

@@ -22,10 +22,9 @@ program
   .description('VilelaIA - Agente de IA com expertise em SEO, Landing Pages e Websites')
   .version('1.0.0');
 
-// Comando: build
 program
   .command('build <description>')
-  .description('🏗️  Build um componente, página ou estrutura')
+  .description('Build um componente, pagina ou estrutura')
   .option('-f, --file <file>', 'Arquivo para salvar o resultado')
   .option('-c, --context <context>', 'Contexto adicional')
   .option('-l, --language <language>', 'Linguagem: html, css, js, react, ts')
@@ -33,12 +32,11 @@ program
     await executeTask('build', description, options);
   });
 
-// Comando: fix
 program
   .command('fix <description>')
-  .description('🔧 Corrigir bugs ou problemas no código')
-  .option('-f, --file <file>', 'Arquivo com o código problemático')
-  .option('-c, --context <context>', 'Código para revisar')
+  .description('Corrigir bugs ou problemas no codigo')
+  .option('-f, --file <file>', 'Arquivo com o codigo problemático')
+  .option('-c, --context <context>', 'Codigo para revisar')
   .action(async (description, options) => {
     if (options.file && fs.existsSync(options.file)) {
       options.context = fs.readFileSync(options.file, 'utf-8');
@@ -46,15 +44,14 @@ program
     await executeTask('fix', description, options);
   });
 
-// Comando: review
 program
   .command('review')
-  .description('👀 Fazer code review detalhado')
+  .description('Fazer code review detalhado')
   .option('-f, --file <file>', 'Arquivo para revisar')
   .option('-d, --depth <depth>', 'Profundidade: basic, standard, deep', 'standard')
   .action(async (options) => {
     if (!options.file || !fs.existsSync(options.file)) {
-      console.error(chalk.red('❌ Arquivo não encontrado'));
+      console.error(chalk.red('Arquivo nao encontrado'));
       process.exit(1);
     }
 
@@ -63,12 +60,11 @@ program
     await executeTask('review', description, { context });
   });
 
-// Comando: explain
 program
   .command('explain')
-  .description('💡 Explicar código ou conceito')
+  .description('Explicar codigo ou conceito')
   .option('-f, --file <file>', 'Arquivo para explicar')
-  .option('-c, --code <code>', 'Código para explicar')
+  .option('-c, --code <code>', 'Codigo para explicar')
   .action(async (options) => {
     let context = options.code;
     
@@ -77,17 +73,16 @@ program
     }
 
     if (!context) {
-      console.error(chalk.red('❌ Forneça código com -f ou -c'));
+      console.error(chalk.red('Forneça codigo com -f ou -c'));
       process.exit(1);
     }
 
-    await executeTask('explain', 'Explique este código', { context });
+    await executeTask('explain', 'Explique este codigo', { context });
   });
 
-// Comando: generate
 program
   .command('generate <description>')
-  .description('⚙️  Gerar código novo')
+  .description('Gerar codigo novo')
   .option('-l, --language <language>', 'Linguagem: html, css, js, react, ts', 'js')
   .option('-f, --file <file>', 'Salvar em arquivo')
   .action(async (description, options) => {
@@ -99,40 +94,39 @@ program
 
     const agent = new FrontendAgent();
     if (!agent.validateApiKey()) {
-      console.error(chalk.red('❌ GROQ_API_KEY não configurada'));
-      console.log(chalk.yellow('💡 Configure: export GROQ_API_KEY=sua_chave'));
+      console.error(chalk.red('OPENCODE_GO_API_KEY nao configurada'));
+      console.log(chalk.yellow('Configure: vilela config --set-key sua_chave'));
       process.exit(1);
     }
 
-    const spinner = ora(chalk.cyan(`🤖 Gerando ${options.language}...`)).start();
+    const spinner = ora(chalk.cyan(`Gerando ${options.language}...`)).start();
 
     const response = await agent.process(task);
     spinner.stop();
 
     if (response.success && response.result) {
-      console.log(chalk.green('\n✅ Código gerado com sucesso!\n'));
+      console.log(chalk.green('\nCodigo gerado com sucesso!\n'));
       console.log(response.result);
 
       if (options.file) {
         fs.writeFileSync(options.file, response.result);
-        console.log(chalk.green(`\n✨ Salvo em: ${options.file}`));
+        console.log(chalk.green(`\nSalvo em: ${options.file}`));
       }
 
-      console.log(chalk.gray(`\n📊 Tokens: ${response.metadata?.tokensUsed} | Tempo: ${response.metadata?.executionTime}ms`));
+      console.log(chalk.gray(`\nTokens: ${response.metadata?.tokensUsed} | Tempo: ${response.metadata?.executionTime}ms`));
     } else {
-      console.error(chalk.red(`\n❌ ${response.error}`));
+      console.error(chalk.red(`\n${response.error}`));
       process.exit(1);
     }
   });
 
-// Comando: refactor
 program
   .command('refactor <file>')
-  .description('♻️  Refatorar código existente')
+  .description('Refatorar codigo existente')
   .option('-d, --description <description>', 'O que melhorar', 'melhorar qualidade e performance')
   .action(async (file, options) => {
     if (!fs.existsSync(file)) {
-      console.error(chalk.red('❌ Arquivo não encontrado'));
+      console.error(chalk.red('Arquivo nao encontrado'));
       process.exit(1);
     }
 
@@ -140,77 +134,72 @@ program
     await executeTask('refactor', options.description, { context, file });
   });
 
-// Comando: teach
 program
   .command('teach <topic>')
-  .description('🎓 Aprenda sobre um tópico frontend')
-  .option('-l, --level <level>', 'Nível: beginner, intermediate, advanced', 'intermediate')
+  .description('Aprenda sobre um topico frontend')
+  .option('-l, --level <level>', 'Nivel: beginner, intermediate, advanced', 'intermediate')
   .action(async (topic, options) => {
     const agent = new FrontendAgent({ language: 'pt-BR' });
     
     if (!agent.validateApiKey()) {
-      console.error(chalk.red('❌ GROQ_API_KEY não configurada'));
+      console.error(chalk.red('OPENCODE_GO_API_KEY nao configurada'));
       process.exit(1);
     }
 
-    const spinner = ora(chalk.cyan(`📚 Ensinando ${topic}...`)).start();
+    const spinner = ora(chalk.cyan(`Ensinando ${topic}...`)).start();
 
     const response = await agent.process({
       type: 'explain',
-      description: `Ensine sobre "${topic}" no nível ${options.level}. Inclua exemplos práticos e dicas.`,
+      description: `Ensine sobre "${topic}" no nivel ${options.level}. Inclua exemplos praticos e dicas.`,
     });
 
     spinner.stop();
 
     if (response.success) {
-      console.log(chalk.green('\n✅ Aula preparada!\n'));
+      console.log(chalk.green('\nAula preparada!\n'));
       console.log(response.result);
     } else {
-      console.error(chalk.red(`\n❌ ${response.error}`));
+      console.error(chalk.red(`\n${response.error}`));
       process.exit(1);
     }
   });
 
-// Comando: landing-page (lp)
 program
   .command('landing-page <description>')
   .alias('lp')
-  .description('🎯 Criar Landing Page de alta conversão')
+  .description('Criar Landing Page de alta conversao')
   .option('-f, --file <file>', 'Arquivo para salvar o resultado')
   .option('-t, --template <template>', 'Template: modern, classic, minimal, bold', 'modern')
   .action(async (description, options) => {
     await executeTask('landing-page', description, { ...options, template: options.template });
   });
 
-// Comando: website (site)
 program
   .command('website <description>')
   .alias('site')
-  .description('🌐 Criar Website profissional completo')
+  .description('Criar Website profissional completo')
   .option('-f, --file <file>', 'Arquivo para salvar o resultado')
   .option('-t, --template <template>', 'Template: modern, classic, minimal, bold', 'modern')
   .action(async (description, options) => {
     await executeTask('website', description, { ...options, template: options.template });
   });
 
-// Comando: webapp (app)
 program
   .command('webapp <description>')
   .alias('app')
-  .description('⚡ Criar Aplicação Web moderna')
+  .description('Criar Aplicacao Web moderna')
   .option('-f, --file <file>', 'Arquivo para salvar o resultado')
   .option('-l, --language <language>', 'Framework: react, vue, angular, nextjs, nuxt', 'react')
   .action(async (description, options) => {
     await executeTask('webapp', description, options);
   });
 
-// Comando: seo
 program
   .command('seo')
-  .description('🔍 Otimizar SEO de código existente')
+  .description('Otimizar SEO de codigo existente')
   .option('-f, --file <file>', 'Arquivo para otimizar')
-  .option('-c, --code <code>', 'Código para otimizar')
-  .option('-d, --description <description>', 'Foco da otimização', 'SEO geral')
+  .option('-c, --code <code>', 'Codigo para otimizar')
+  .option('-d, --description <description>', 'Foco da otimizacao', 'SEO geral')
   .action(async (options) => {
     let context = options.code;
     
@@ -219,43 +208,43 @@ program
     }
 
     if (!context) {
-      console.error(chalk.red('❌ Forneça código com -f ou -c'));
+      console.error(chalk.red('Forneça codigo com -f ou -c'));
       process.exit(1);
     }
 
     await executeTask('seo', options.description, { context });
   });
 
-// Comando: config
 program
   .command('config')
-  .description('⚙️  Gerenciar configurações')
-  .option('--set-key <key>', 'Definir GROQ_API_KEY')
-  .option('--show', 'Mostrar configuração atual')
+  .description('Gerenciar configuracoes')
+  .option('--set-key <key>', 'Definir OPENCODE_GO_API_KEY')
+  .option('--show', 'Mostrar configuracao atual')
   .action((options) => {
     if (options.setKey) {
-      process.env.GROQ_API_KEY = options.setKey;
-      console.log(chalk.green('✅ API Key configurada!'));
+      process.env.OPENCODE_GO_API_KEY = options.setKey;
+      console.log(chalk.green('API Key configurada!'));
     } else if (options.show) {
-      console.log(chalk.cyan('\n📋 Configuração:'));
-      console.log(`GROQ_API_KEY: ${process.env.GROQ_API_KEY ? '✓ Configurada' : '✗ Não configurada'}`);
+      console.log(chalk.cyan('\nConfiguracao:'));
+      console.log(`OPENCODE_GO_API_KEY: ${process.env.OPENCODE_GO_API_KEY ? 'Configurada' : 'Nao configurada'}`);
+      console.log(`Modelo: qwen3.7-plus`);
+      console.log(`Endpoint: https://opencode.ai/zen/go/v1`);
     }
   });
 
-// Função auxiliar
 async function executeTask(type: any, description: string, options: any) {
   const agent = new FrontendAgent({ language: 'pt-BR' });
 
   if (!agent.validateApiKey()) {
-    console.error(chalk.red('\n❌ GROQ_API_KEY não configurada!'));
-    console.log(chalk.yellow('\n💡 Configure com:'));
-    console.log(`   set GROQ_API_KEY=sua_chave_groq`);
-    console.log(chalk.gray('\n   Obtenha em: https://console.groq.com\n'));
+    console.error(chalk.red('\nOPENCODE_GO_API_KEY nao configurada!'));
+    console.log(chalk.yellow('\nConfigure com:'));
+    console.log(`   vilela config --set-key sua_chave_opencode_go`);
+    console.log(chalk.gray('\n   Obtenha em: https://opencode.ai/auth\n'));
     process.exit(1);
   }
 
   const taskType = type === 'lp' ? 'landing-page' : type === 'site' ? 'website' : type === 'app' ? 'webapp' : type;
-  const spinner = ora(chalk.cyan(`🤖 Processando ${taskType}...`)).start();
+  const spinner = ora(chalk.cyan(`Processando ${taskType}...`)).start();
 
   const response = await agent.process({
     type: taskType,
@@ -269,17 +258,17 @@ async function executeTask(type: any, description: string, options: any) {
   spinner.stop();
 
   if (response.success && response.result) {
-    console.log(chalk.green('\n✅ Sucesso!\n'));
+    console.log(chalk.green('\nSucesso!\n'));
     console.log(response.result);
 
     if (options.file) {
       fs.writeFileSync(options.file, response.result);
-      console.log(chalk.green(`\n✨ Salvo em: ${options.file}`));
+      console.log(chalk.green(`\nSalvo em: ${options.file}`));
     }
 
-    console.log(chalk.gray(`\n📊 Tokens: ${response.metadata?.tokensUsed} | Tempo: ${response.metadata?.executionTime}ms`));
+    console.log(chalk.gray(`\nTokens: ${response.metadata?.tokensUsed} | Tempo: ${response.metadata?.executionTime}ms`));
   } else {
-    console.error(chalk.red(`\n❌ ${response.error}`));
+    console.error(chalk.red(`\n${response.error}`));
     process.exit(1);
   }
 }
