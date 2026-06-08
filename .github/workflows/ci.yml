@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 11
       - run: pnpm install
       - run: pnpm run typecheck:libs
       - run: pnpm --dir artifacts/api-server run typecheck
