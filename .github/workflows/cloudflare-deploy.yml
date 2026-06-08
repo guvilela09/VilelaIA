@@ -17,7 +17,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - run: npm install -g wrangler
       - run: pnpm install
+      - run: pnpm --filter vilelaia-api run build
       - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -38,6 +40,7 @@ jobs:
         with:
           node-version: 22
       - run: pnpm install
+      - run: pnpm run typecheck:libs
       - run: pnpm --filter vilelaia-web run build
       - uses: cloudflare/pages-action@v1
         with:

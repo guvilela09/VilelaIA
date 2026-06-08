@@ -27,3 +27,4 @@ jobs:
       - run: pnpm --dir artifacts/api-server run build
       - run: pnpm --dir artifacts/web-agent run typecheck
       - run: pnpm --dir artifacts/web-agent run build
+      - run: pnpm --filter vilelaia-cli run build
