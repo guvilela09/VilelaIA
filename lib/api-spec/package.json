@@ -1,0 +1,12 @@
+{
+  "name": "@vilelaia/api-spec",
+  "version": "1.0.0",
+  "description": "VilelaIA - API Spec",
+  "private": true,
+  "scripts": {
+    "codegen": "orval --config ./orval.config.ts && pnpm -w run typecheck:libs"
+  },
+  "devDependencies": {
+    "orval": "^8.9.1"
+  }
+}

@@ -1,0 +1,25 @@
+name: Netlify Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy frontend to Netlify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - run: pnpm install
+      - run: pnpm --dir artifacts/web-agent run build
+      - name: Deploy to Netlify
+        uses: netlify/actions/cli@v2
+        with:
+          args: deploy --dir=artifacts/web-agent/dist/public --prod --message "GitHub Actions deploy"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}

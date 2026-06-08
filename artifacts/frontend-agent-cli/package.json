@@ -1,0 +1,30 @@
+{
+  "name": "vilelaia-cli",
+  "version": "1.0.0",
+  "description": "VilelaIA CLI - Agente de IA para SEO, Landing Pages e Websites Profissionais",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "vilela": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "node ./dist/cli.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "pack": "pkg ./dist/cli.js --targets node18-win-x64 --output dist/agent.exe"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "dotenv": "^17.4.2",
+    "groq-sdk": "^1.2.0",
+    "ora": "^8.0.1",
+    "prettier": "^3.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "pkg": "^5.8.1",
+    "typescript": "~5.9.3"
+  }
+}

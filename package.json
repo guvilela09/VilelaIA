@@ -1,0 +1,23 @@
+{
+  "name": "vilelaia",
+  "version": "1.0.0",
+  "description": "VilelaIA - Agente de IA especializado em SEO, Landing Pages, Websites e Aplicações Web",
+  "license": "MIT",
+  "scripts": {
+    "build": "pnpm run typecheck && pnpm -r --if-present run build",
+    "typecheck:libs": "tsc --build",
+    "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck",
+    "dev:api": "pnpm --dir artifacts/api-server run dev",
+    "dev:web": "pnpm --dir artifacts/web-agent run dev"
+  },
+  "private": true,
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "prettier": "^3.8.3",
+    "typescript": "~5.9.3"
+  },
+  "dependencies": {
+    "@esbuild/win32-x64": "0.27.3",
+    "drizzle-kit": "^0.31.10"
+  }
+}

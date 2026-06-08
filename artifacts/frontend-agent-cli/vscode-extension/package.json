@@ -1,0 +1,47 @@
+{
+  "name": "frontend-agent-vscode",
+  "displayName": "Frontend Agent - AI Programmer",
+  "description": "Senior Frontend Programmer AI Agent with slash commands",
+  "version": "1.0.0",
+  "publisher": "frontend-agent",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["AI", "Developer Tools"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "frontend-agent.build",
+        "title": "Build Component",
+        "category": "Frontend Agent"
+      },
+      {
+        "command": "frontend-agent.fix",
+        "title": "Fix Code",
+        "category": "Frontend Agent"
+      },
+      {
+        "command": "frontend-agent.review",
+        "title": "Code Review",
+        "category": "Frontend Agent"
+      },
+      {
+        "command": "frontend-agent.explain",
+        "title": "Explain Code",
+        "category": "Frontend Agent"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "typecheck": "tsc -p ./ --noEmit"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.0.0",
+    "typescript": "~5.9.3"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@vilelaia/api-zod",
+  "version": "1.0.0",
+  "description": "VilelaIA - API Zod Schemas",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  }
+}

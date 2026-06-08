@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build and typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - run: pnpm install
+      - run: pnpm run typecheck:libs
+      - run: pnpm --dir artifacts/api-server run typecheck
+      - run: pnpm --dir artifacts/api-server run build
+      - run: pnpm --dir artifacts/web-agent run typecheck
+      - run: pnpm --dir artifacts/web-agent run build
