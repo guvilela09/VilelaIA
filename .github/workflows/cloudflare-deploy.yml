@@ -16,12 +16,15 @@ jobs:
           version: 11
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+      - run: pnpm install
       - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
-          workingDirectory: .
+          workingDirectory: artifacts/api-server
+          packageManager: pnpm
 
   deploy-frontend:
     name: Deploy Frontend to Cloudflare Pages
@@ -33,7 +36,7 @@ jobs:
           version: 11
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - run: pnpm install
       - run: pnpm --filter vilelaia-web run build
       - uses: cloudflare/pages-action@v1

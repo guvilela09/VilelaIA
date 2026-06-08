@@ -145,9 +145,6 @@ importers:
 
   .:
     dependencies:
-      '@esbuild/win32-x64':
-        specifier: 0.27.3
-        version: 0.27.3
       drizzle-kit:
         specifier: ^0.31.10
         version: 0.31.10
@@ -4242,7 +4239,8 @@ snapshots:
   '@esbuild/openharmony-arm64@0.27.3':
     optional: true
 
-  '@esbuild/win32-x64@0.27.3': {}
+  '@esbuild/win32-x64@0.27.3':
+    optional: true
 
   '@floating-ui/core@1.7.5':
     dependencies:
