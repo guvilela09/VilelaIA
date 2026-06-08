@@ -14,12 +14,13 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
       - run: pnpm install
       - run: pnpm --dir artifacts/web-agent run build
       - name: Deploy to Netlify
-        uses: netlify/actions/cli@v2
-        with:
-          args: deploy --dir=artifacts/web-agent/dist/public --prod --message "GitHub Actions deploy"
+        run: npx netlify-cli deploy --dir=artifacts/web-agent/dist/public --prod --message "GitHub Actions deploy"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
