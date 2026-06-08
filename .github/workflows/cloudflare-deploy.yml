@@ -27,6 +27,7 @@ jobs:
           command: deploy
           workingDirectory: artifacts/api-server
           packageManager: pnpm
+          wranglerVersion: '3'
 
   deploy-frontend:
     name: Deploy Frontend to Cloudflare Pages
@@ -48,3 +49,4 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: vilelaia-web
           directory: artifacts/web-agent/dist/public
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
