@@ -1,0 +1,18 @@
+name = "vilelaia-api"
+main = "src/index.ts"
+compatibility_date = "2026-06-08"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+NODE_ENV = "production"
+
+# [secrets]
+# DATABASE_URL - configure via Cloudflare dashboard or wrangler secret put
+# OPENCODE_GO_API_KEY - configure via Cloudflare dashboard or wrangler secret put
+
+[build]
+command = "pnpm install && pnpm --dir artifacts/api-server run build"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "vilelaia-bucket"

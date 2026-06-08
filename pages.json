@@ -1,0 +1,8 @@
+{
+  "build": {
+    "command": "pnpm install && pnpm --filter vilelaia-web run build",
+    "output": "artifacts/web-agent/dist/public"
+  },
+  "name": "vilelaia-web",
+  "compatibility_date": "2026-06-08"
+}

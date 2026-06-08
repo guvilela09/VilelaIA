@@ -151,11 +151,53 @@ A interface web estara disponivel em http://localhost:5173
 
 ## Deploy
 
-### Netlify (Frontend Web)
-O projeto ja esta configurado para deploy no Netlify via `netlify.toml`.
+### Cloudflare (Recomendado)
 
-### Render (API Server)
-O projeto ja esta configurado para deploy no Render via `render.yaml`.
+O projeto está configurado para deploy na Cloudflare:
+
+1. **Frontend** → Cloudflare Pages
+2. **API** → Cloudflare Workers
+
+#### Configurar Secrets no Cloudflare
+
+```bash
+# Instalar Wrangler CLI
+npm install -g wrangler
+
+# Login
+wrangler login
+
+# Adicionar secrets da API
+wrangler secret put DATABASE_URL
+wrangler secret put OPENCODE_GO_API_KEY
+```
+
+#### Deploy Manual
+
+```bash
+# Deploy da API
+wrangler deploy
+
+# Deploy do Frontend
+npx wrangler pages deploy artifacts/web-agent/dist/public --project-name=vilelaia-web
+```
+
+#### Variáveis de Ambiente no Cloudflare Dashboard
+
+**Workers (API):**
+- `DATABASE_URL` - PostgreSQL connection string
+- `OPENCODE_GO_API_KEY` - Sua chave OpenCode Go
+
+**Pages (Frontend):**
+- Nenhuma variável necessária
+
+### Netlify (Alternativa)
+
+O projeto também está configurado para Netlify via `netlify.toml`.
+
+### Render (Alternativa)
+
+A API também pode ser deployada no Render via `render.yaml`.
 
 ---
 
